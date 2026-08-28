@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Eliana Events — Wedding & Event Planning</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ambient glow orbs -->
+<div class="glow-orb" style="top:-80px; left:20%; width:480px; height:300px; background:rgba(232,199,102,0.22);"></div>
+<div class="glow-orb" style="top:40px; right:8%; width:380px; height:380px; background:rgba(232,107,138,0.16); animation-delay:1.2s;"></div>
+<div class="glow-orb" style="top:900px; left:5%; width:420px; height:320px; background:rgba(95,184,172,0.16); animation-delay:2.4s;"></div>
+<div class="glow-orb" style="top:1500px; right:10%; width:400px; height:300px; background:rgba(226,154,62,0.18); animation-delay:0.6s;"></div>
+
+<!-- NAV -->
+<header class="glass site-header">
+  <div class="container nav-inner">
+    <div class="brand" data-nav="home">Eliana&nbsp;Events</div>
+    <nav class="nav-links">
+      <span class="nav-link" data-nav="home" data-i18n="nav.home">Home</span>
+      <span class="nav-link" data-nav="packages" data-i18n="nav.packages">Packages</span>
+      <button class="btn-primary btn-small" data-nav="book" data-i18n="nav.book">Book</button>
+      <button class="lang-toggle" id="langToggle">አማ</button>
+    </nav>
+  </div>
+</header>
+
+<!-- HOME VIEW -->
+<main id="view-home" class="view">
+
+  <!-- HERO -->
+  <section class="hero-section hero-with-bg">
+    <div class="container hero-inner">
+      <div class="eyebrow fade-up fade-up-1" data-i18n="heroEyebrow">Addis Ababa & beyond</div>
+      <h1 class="hero-title fade-up fade-up-2" data-i18n="heroTitle">Your love story, honored the Habesha way</h1>
+      <p class="hero-body fade-up fade-up-2" data-i18n="heroBody">From the melse to the church doors to the final dance — we plan every layer of the celebration, in your language and your customs.</p>
+      <div class="hero-ctas fade-up fade-up-3">
+        <button class="btn-primary" data-scroll="packages" data-i18n="heroCta">See packages</button>
+        <button class="btn-secondary" data-nav="book" data-i18n="heroCta2">Book a date</button>
+      </div>
+    </div>
+
+    <!-- Hero photo collage: Venue + Floral (Table image removed per request) -->
+    <div class="photo-row fade-up-smooth">
+      <div class="photo-tile"><img src="images/wedding 7.jpg" alt="Venue" loading="lazy" /></div>
+      <div class="photo-tile"><img src="images/wedding 8.jpg" alt="Floral design" loading="lazy" /></div>
+    </div>
+  </section>
+
+  <!-- PROMISE -->
+  <section class="section-tight">
+    <div class="container glass promise-box fade-up">
+      <div class="label-gold" data-i18n="promiseLabel">Our promise</div>
+      <p class="promise-text" data-i18n="promise">"Your love story deserves a perfect celebration. We plan with passion, create with elegance, and deliver unforgettable memories."</p>
+    </div>
+  </section>
+
+  <!-- MIDDLE IMAGE STRIP -->
+  <section class="section-tight">
+    <div class="container photo-row fade-up-smooth">
+      <div class="photo-tile"><img src="images/event 2.jpg" alt="Reception table decor" loading="lazy" /></div>
+      <div class="photo-tile"><img src="images/event 3.jpg" alt="Candle centerpiece" loading="lazy" /></div>
+      <div class="photo-tile"><img src="images/event 4.jpg" alt="Table arrangement" loading="lazy" /></div>
+    </div>
+  </section>
+
+  <!-- PACKAGES -->
+  <section id="packages-section" class="section-loose">
+    <div class="container">
+      <div class="section-heading">
+        <h2 data-i18n="packagesTitle">Choose how much of the journey we carry</h2>
+        <p data-i18n="packagesSub">Three levels of support, built around multi-day Ethiopian celebrations — engagement, ceremony, and reception.</p>
+      </div>
+      <div id="packagesGrid" class="packages-grid"></div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="section-tight">
+    <div class="container glass gallery-box fade-up">
+      <h2 data-i18n="galleryTitle">Real weddings, coming soon</h2>
+      <p data-i18n="galleryBody">We're a new studio — this gallery will fill with our own couples' celebrations. Until then, we'd rather show you nothing than borrow someone else's day.</p>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">Habesha&nbsp;Events</div>
+      <p class="footer-contact-label" data-i18n="footerContact">Get in touch</p>
+
+      <div class="footer-links">
+        <a class="footer-link" href="https://t.me/YourTelegramUsername" target="_blank" rel="noreferrer">
+          <span class="footer-icon"><img src="images/icon-telegram.png" alt="" /></span>
+          <span>Telegram</span>
+        </a>
+
+        <a class="footer-link" href="https://instagram.com/YourInstagramHandle" target="_blank" rel="noreferrer">
+          <span class="footer-icon"><img src="images/icon-instagram.png" alt="" /></span>
+          <span>Instagram</span>
+        </a>
+
+        <a class="footer-link" href="mailto:hello@habeshaevents.com">
+          <span class="footer-icon"><img src="images/icon-email.png" alt="" /></span>
+          <span>hello@habeshaevents.com</span>
+        </a>
+
+        <a class="footer-link" href="tel:+251900000000">
+          <span class="footer-icon"><img src="images/icon-phone.png" alt="" /></span>
+          <span>+251 900 000 000</span>
+        </a>
+      </div>
+
+      <p class="footer-note" data-i18n="footerNote">Planned with care, in Addis Ababa.</p>
+    </div>
+  </footer>
+</main>
+
+<!-- BOOKING VIEW -->
+<section id="view-book" class="view" hidden>
+  <div class="container" style="max-width:560px;">
+    <button class="nav-link back-link" data-nav="home">← <span data-i18n="backHome">Back to home</span></button>
+    <div class="glass fade-up booking-box">
+      <h2 data-i18n="bookTitle">Tell us about your celebration</h2>
+      <p class="muted-text" data-i18n="bookSub">A few details, then we'll reach out on Telegram to confirm.</p>
+
+      <form id="bookingForm" novalidate>
+        <div class="field">
+          <label data-i18n="fields.name">Full name</label>
+          <input required type="text" name="name" />
+        </div>
+        <div class="field">
+          <label data-i18n="fields.phone">Phone number</label>
+          <input required type="tel" name="phone" placeholder="+251 9xx xxx xxx" />
+        </div>
+        <div class="field">
+          <label data-i18n="fields.date">Event date</label>
+          <input required type="date" name="date" id="dateInput" />
+        </div>
+        <div class="field">
+          <label data-i18n="fields.package">Package</label>
+          <select name="package" id="packageSelect"></select>
+        </div>
+        <div class="field">
+          <label data-i18n="fields.eventType">Celebration type</label>
+          <select required name="eventType" id="eventTypeSelect"></select>
+        </div>
+        <div class="field">
+          <label data-i18n="fields.notes">Anything we should know</label>
+          <textarea name="notes" rows="3"></textarea>
+        </div>
+        <button class="btn-primary" type="submit" style="margin-top:8px;" data-i18n="submit">Submit booking</button>
+        <p id="formError" class="form-error" hidden></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- CONFIRMATION VIEW -->
+<section id="view-confirm" class="view" hidden>
+  <div class="container" style="max-width:480px; text-align:center;">
+    <div class="glass fade-up confirm-box">
+      <div class="check-mark">✓</div>
+      <h2 data-i18n="confirmTitle">Received — one last step</h2>
+      <p class="muted-text" data-i18n="confirmBody">Our team has already been notified. Tap below to open Telegram and get your confirmation with the next steps.</p>
+      <div class="muted-text small" id="bookingRef"></div>
+
+      <a id="telegramLink" class="btn-primary telegram-btn" target="_blank" rel="noreferrer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21.05 2.93 2.6 10.14c-1.28.5-1.27 1.2-.23 1.52l4.72 1.48 1.82 5.6c.22.6.4.85.81.85.4 0 .58-.18.8-.4l2.05-2 4.27 3.15c.78.44 1.35.21 1.55-.72l2.8-13.2c.3-1.16-.44-1.68-1.14-1.5Z"/></svg>
+        <span data-i18n="telegramCta">Confirm on Telegram</span>
+      </a>
+      <p class="muted-text small" data-i18n="onscreenNote">Prefer not to use Telegram? Your booking is saved either way — we'll also reach you by phone.</p>
+
+      <div style="margin-top:32px;">
+        <button class="btn-secondary" data-nav="home" data-i18n="backHome">Back to home</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>

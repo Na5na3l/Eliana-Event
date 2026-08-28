@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Eliana Events — Admin</title>
+<style>
+  :root {
+    --bg: #0E1D17; --panel: rgba(255,255,255,0.05); --border: rgba(201,162,39,0.28);
+    --gold: #C9A227; --gold-br: #E8C766; --cream: #F3ECD9; --muted: #B7AC92; --wine: #8B3A3A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--cream);
+    font-family: 'Inter', -apple-system, sans-serif; padding: 32px 20px;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 22px; color: var(--gold-br); margin: 0 0 20px; }
+
+  .gate { max-width: 380px; margin: 80px auto; text-align: center; }
+  .gate p { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+  input {
+    width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 4px;
+    background: rgba(255,255,255,0.03); color: var(--cream); font-size: 15px; margin-bottom: 12px;
+  }
+  input:focus { outline: none; border-color: var(--gold-br); }
+  button {
+    background: var(--gold-br); color: #171204; border: none; padding: 11px 22px;
+    border-radius: 4px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%;
+  }
+  button:hover { background: var(--gold); }
+  button.danger { background: var(--wine); color: var(--cream); width: auto; padding: 6px 14px; font-size: 13px; }
+  button.danger:hover { background: #6f2828; }
+
+  .status { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+  .status.error { color: #E8637A; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--gold-br); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+  .notes { color: var(--muted); max-width: 220px; }
+  #app[hidden], #gate[hidden] { display: none; }
+</style>
+</head>
+<body>
+
+<div id="gate" class="wrap gate">
+  <h1>Eliana Events — Admin</h1>
+  <p>Enter your admin key to view bookings.</p>
+  <input id="keyInput" type="password" placeholder="Admin key" />
+  <button id="unlockBtn">Unlock</button>
+  <p id="gateError" class="status error" style="display:none;"></p>
+</div>
+
+<div id="app" class="wrap" hidden>
+  <h1>Bookings</h1>
+  <p id="status" class="status">Loading…</p>
+  <table id="table" style="display:none;">
+    <thead>
+      <tr>
+        <th>Ref</th><th>Name</th><th>Phone</th><th>Date</th><th>Package</th><th>Type</th><th>Notes</th><th></th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<script>
+  const KEY_STORAGE = "habesha_admin_key";
+  let adminKey = sessionStorage.getItem(KEY_STORAGE) || "";
+
+  const gate = document.getElementById("gate");
+  const app = document.getElementById("app");
+
+  async function loadBookings() {
+    const statusEl = document.getElementById("status");
+    const table = document.getElementById("table");
+    const tbody = document.getElementById("tbody");
+
+    statusEl.textContent = "Loading…";
+    statusEl.className = "status";
+    table.style.display = "none";
+
+    try {
+      const res = await fetch("/api/bookings", { headers: { "x-admin-key": adminKey } });
+      if (res.status === 401) {
+        sessionStorage.removeItem(KEY_STORAGE);
+        showGate("That key was rejected. Try again.");
+        return;
+      }
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+      const data = await res.json();
+      const bookings = data.bookings || [];
+
+      if (bookings.length === 0) {
+        statusEl.textContent = "No bookings yet.";
+        return;
+      }
+
+      statusEl.textContent = `${bookings.length} booking${bookings.length === 1 ? "" : "s"}`;
+      tbody.innerHTML = bookings.map(rowHtml).join("");
+      table.style.display = "table";
+
+      tbody.querySelectorAll("[data-delete]").forEach((btn) => {
+        btn.addEventListener("click", () => deleteBooking(btn.getAttribute("data-delete")));
+      });
+    } catch (err) {
+      statusEl.textContent = "Failed to load bookings: " + err.message;
+      statusEl.className = "status error";
+    }
+  }
+
+  function rowHtml(b) {
+    return `<tr>
+      <td>${escapeHtml(b.bookingId)}</td>
+      <td>${escapeHtml(b.name)}</td>
+      <td>${escapeHtml(b.phone)}</td>
+      <td>${escapeHtml(b.date)}</td>
+      <td>${escapeHtml(b.package)}</td>
+      <td>${escapeHtml(b.eventType)}</td>
+      <td class="notes">${escapeHtml(b.notes || "—")}</td>
+      <td><button class="danger" data-delete="${escapeHtml(b.bookingId)}">Mark done / Delete</button></td>
+    </tr>`;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str == null ? "" : String(str);
+    return div.innerHTML;
+  }
+
+  async function deleteBooking(bookingId) {
+    if (!confirm(`Delete booking ${bookingId}? This can't be undone.`)) return;
+    try {
+      const res = await fetch(`/api/bookings/${encodeURIComponent(bookingId)}`, {
+        method: "DELETE",
+        headers: { "x-admin-key": adminKey },
+      });
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+      loadBookings();
+    } catch (err) {
+      alert("Failed to delete: " + err.message);
+    }
+  }
+
+  function showGate(errorMsg) {
+    gate.hidden = false;
+    app.hidden = true;
+    const err = document.getElementById("gateError");
+    if (errorMsg) {
+      err.textContent = errorMsg;
+      err.style.display = "block";
+    }
+  }
+
+  function showApp() {
+    gate.hidden = true;
+    app.hidden = false;
+    loadBookings();
+  }
+
+  document.getElementById("unlockBtn").addEventListener("click", () => {
+    const value = document.getElementById("keyInput").value.trim();
+    if (!value) return;
+    adminKey = value;
+    sessionStorage.setItem(KEY_STORAGE, adminKey);
+    showApp();
+  });
+
+  document.getElementById("keyInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") document.getElementById("unlockBtn").click();
+  });
+
+  // If a key is already stored for this session, skip straight to the list.
+  if (adminKey) {
+    showApp();
+  }
+</script>
+</body>
+</html>
