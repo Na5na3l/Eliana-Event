@@ -303,7 +303,7 @@ function genLocalId() {
 
 function showConfirmation(bookingId) {
   document.getElementById("bookingRef").textContent = `${currentLang === "am" ? "የማስያዣ ቁጥር" : "Booking ref"}: ${bookingId}`;
-  document.getElementById("telegramLink").href = `https://t.me/${BOT_USERNAME}?start=${bookingId}`;
+  document.getElementById("telegramLink").href = `https://t.me/${Habeshan_eventbot}?start=${bookingId}`;
   navigate("confirm");
 }
 
