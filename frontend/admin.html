@@ -35,11 +35,28 @@
   .status { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
   .status.error { color: #E8637A; }
 
-  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
-  th { color: var(--gold-br); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
-  tr:hover td { background: rgba(255,255,255,0.02); }
-  .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+  @keyframes popIn {
+  0% { opacity: 0; transform: scale(0.92) translateY(10px); }
+  70% { transform: scale(1.015) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.booking-list { display: flex; flex-direction: column; gap: 14px; }
+.booking-card {
+  background: var(--cream);
+  color: #2A1B14;
+  border-radius: 8px;
+  padding: 16px 18px;
+  border: 1px solid rgba(201,162,39,0.4);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+  animation: popIn 0.4s cubic-bezier(.2,.8,.3,1.2) both;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 10px 20px;
+  align-items: start;
+}
+.booking-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #8B3A3A; font-weight: 700; margin-bottom: 2px; }
+.booking-card .value { font-size: 13.5px; }
+.booking-card .full-width { grid-column: 1 / -1; }  .empty { text-align: center; color: var(--muted); padding: 40px 0; }
   .notes { color: var(--muted); max-width: 220px; }
   #app[hidden], #gate[hidden] { display: none; }
 </style>
@@ -58,13 +75,9 @@
   <h1>Bookings</h1>
   <p id="status" class="status">Loading…</p>
   <table id="table" style="display:none;">
-    <thead>
-      <tr>
-        <th>Ref</th><th>Name</th><th>Phone</th><th>Date</th><th>Package</th><th>Type</th><th>Notes</th><th></th>
-      </tr>
-    </thead>
-    <tbody id="tbody"></tbody>
-  </table>
+  <div id="table" class="booking-list" style="display:none;">
+
+  </div>
 </div>
 
 <script>
@@ -74,56 +87,54 @@
   const gate = document.getElementById("gate");
   const app = document.getElementById("app");
 
-  async function loadBookings() {
-    const statusEl = document.getElementById("status");
-    const table = document.getElementById("table");
-    const tbody = document.getElementById("tbody");
+ async function loadBookings() {
+  const statusEl = document.getElementById("status");
+  const table = document.getElementById("table");
 
-    statusEl.textContent = "Loading…";
-    statusEl.className = "status";
-    table.style.display = "none";
+  statusEl.textContent = "Loading…";
+  statusEl.className = "status";
+  table.style.display = "none";
 
-    try {
-      const res = await fetch("/api/bookings", { headers: { "x-admin-key": adminKey } });
-      if (res.status === 401) {
-        sessionStorage.removeItem(KEY_STORAGE);
-        showGate("That key was rejected. Try again.");
-        return;
-      }
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      const data = await res.json();
-      const bookings = data.bookings || [];
-
-      if (bookings.length === 0) {
-        statusEl.textContent = "No bookings yet.";
-        return;
-      }
-
-      statusEl.textContent = `${bookings.length} booking${bookings.length === 1 ? "" : "s"}`;
-      tbody.innerHTML = bookings.map(rowHtml).join("");
-      table.style.display = "table";
-
-      tbody.querySelectorAll("[data-delete]").forEach((btn) => {
-        btn.addEventListener("click", () => deleteBooking(btn.getAttribute("data-delete")));
-      });
-    } catch (err) {
-      statusEl.textContent = "Failed to load bookings: " + err.message;
-      statusEl.className = "status error";
+  try {
+    const res = await fetch("/api/bookings", { headers: { "x-admin-key": adminKey } });
+    if (res.status === 401) {
+      sessionStorage.removeItem(KEY_STORAGE);
+      showGate("That key was rejected. Try again.");
+      return;
     }
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    const data = await res.json();
+    const bookings = data.bookings || [];
+
+    if (bookings.length === 0) {
+      statusEl.textContent = "No bookings yet.";
+      return;
+    }
+
+    statusEl.textContent = `${bookings.length} booking${bookings.length === 1 ? "" : "s"}`;
+    table.innerHTML = bookings.map(rowHtml).join("");
+    table.style.display = "flex";
+
+    table.querySelectorAll("[data-delete]").forEach((btn) => {
+      btn.addEventListener("click", () => deleteBooking(btn.getAttribute("data-delete")));
+    });
+  } catch (err) {
+    statusEl.textContent = "Failed to load bookings: " + err.message;
+    statusEl.className = "status error";
   }
+}
 
   function rowHtml(b) {
-    return `<tr>
-      <td>${escapeHtml(b.bookingId)}</td>
-      <td>${escapeHtml(b.name)}</td>
-      <td>${escapeHtml(b.phone)}</td>
-      <td>${escapeHtml(b.date)}</td>
-      <td>${escapeHtml(b.package)}</td>
-      <td>${escapeHtml(b.eventType)}</td>
-      <td class="notes">${escapeHtml(b.notes || "—")}</td>
-      <td><button class="danger" data-delete="${escapeHtml(b.bookingId)}">Mark done / Delete</button></td>
-    </tr>`;
-  }
+  return `<div class="booking-card">
+    <div><div class="label">Name</div><div class="value">${escapeHtml(b.name)}</div></div>
+    <div><div class="label">Phone</div><div class="value">${escapeHtml(b.phone)}</div></div>
+    <div><div class="label">Date</div><div class="value">${escapeHtml(b.date)}</div></div>
+    <div><button class="danger" data-delete="${escapeHtml(b.bookingId)}">Mark done / Delete</button></div>
+    <div class="full-width"><div class="label">Package · Type</div><div class="value">${escapeHtml(b.package)} · ${escapeHtml(b.eventType)}</div></div>
+    <div class="full-width"><div class="label">Notes</div><div class="value">${escapeHtml(b.notes || "—")}</div></div>
+    <div class="full-width" style="font-size:11px;color:#8B3A3A;">${escapeHtml(b.bookingId)}</div>
+  </div>`;
+}
 
   function escapeHtml(str) {
     const div = document.createElement("div");
