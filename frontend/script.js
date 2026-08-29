@@ -2,7 +2,7 @@
 // The backend serves this frontend as static files, so a relative path
 // always hits the right server — no need to hardcode a host.
 const API_BASE = "";
-const BOT_USERNAME = "Habeshan_eventbot"; // TODO: replace with your real bot username
+const BOT_USERNAME = "Habeshan_eventbot"; // your real bot username
 
 // ---------- Content ----------
 const COPY = {
@@ -41,6 +41,8 @@ const COPY = {
     errDateInvalid: "That doesn't look like a valid date.",
     errDatePast: "That date has already passed — please choose an upcoming date.",
     errEventType: "Please choose a celebration type.",
+    seeOptions: "See celebration types",
+    hideOptions: "Hide options",
   },
   am: {
     "nav.home": "መነሻ", "nav.packages": "አማራጮች", "nav.book": "ይያዙ",
@@ -77,42 +79,61 @@ const COPY = {
     errDateInvalid: "ይህ ትክክለኛ ቀን አይመስልም።",
     errDatePast: "ይህ ቀን አልፏል — እባክዎ ወደፊት ያለ ቀን ይምረጡ።",
     errEventType: "እባክዎ የበዓሉን አይነት ይምረጡ።",
+    seeOptions: "የበዓል አይነቶችን ይመልከቱ",
+    hideOptions: "ደብቅ",
   },
 };
 
 // ---------- Packages ----------
 const PACKAGES = [
-   {
+  {
     id: "celebrations", icon: "🎉", badge: false, accent: "#E86B8A", accentSoft: "rgba(232,107,138,0.18)",
-    en: { name: "Celebrations", tag: "Birthdays · Bridals · Gender Reveals · Engagements", price: "10,000 – 50,000 ETB", duration: "Single-day event · priced by scale & guest count",
-      items: ["Event concept & theme planning","Venue sourcing & booking support","Decor planning & setup coordination","Vendor sourcing (cake, catering, entertainment)","Invitations & guest list support","Event day timeline","On-site event management","Photography coordination (optional)"] },
-    am: { name: "የበዓል አቅድ", tag: "የልደት · ኪዳን · ጾታ መግለጫ · ውል በዓላት", price: "10,000 – 50,000 ብር", duration: "የአንድ ቀን በዓል · በመጠን እና በእንግዳ ብዛት ይተመናል",
-      items: ["የበዓል ፅንሰ ሃሳብ እና ገጽታ እቅድ","የቦታ ፍለጋ እና ማስያዣ ድጋፍ","የጌጣጌጥ እቅድ እና ዝግጅት ማስተባበር","አቅራቢ ፍለጋ (ኬክ፣ ምግብ፣ መዝናኛ)","የግብዣ ካርድ እና እንግዳ ዝርዝር ድጋፍ","የበዓሉ ቀን የጊዜ ሰሌዳ","በቦታው ላይ የበዓል አስተዳደር","የፎቶግራፍ ማስተባበር (አማራጭ)"] },
+    en: { name: "Celebrations", tag: "Birthdays · Bridals · Gender Reveals · Baby Showers", price: "8,000 – 40,000 ETB", duration: "Tap to see all celebration types" },
+    am: { name: "የበዓል አቅድ", tag: "የልደት · ኪዳን · ጾታ መግለጫ · የህፃን አቀባበል", price: "8,000 – 40,000 ብር", duration: "ሁሉንም የበዓል አይነቶች ለማየት ይንኩ" },
+    subPackages: [
+      {
+        eventTypeIndex: 3, id: "baby-shower", icon: "🍼", accent: "#8FC1E3", accentSoft: "rgba(143,193,227,0.18)",
+        en: { name: "Baby Shower", price: "8,000 – 20,000 ETB" },
+        am: { name: "የህፃን አቀባበል", price: "8,000 – 20,000 ብር" },
+      },
+      {
+        eventTypeIndex: 3, id: "birthdays", icon: "🎂", accent: "#E86B8A", accentSoft: "rgba(232,107,138,0.18)",
+        en: { name: "Birthdays", price: "10,000 – 30,000 ETB" },
+        am: { name: "የልደት በዓል", price: "10,000 – 30,000 ብር" },
+      },
+      {
+        eventTypeIndex: 3, id: "gender-reveal", icon: "🎈", accent: "#B48EDE", accentSoft: "rgba(180,142,222,0.18)",
+        en: { name: "Gender Reveal", price: "10,000 – 25,000 ETB" },
+        am: { name: "ጾታ መግለጫ", price: "10,000 – 25,000 ብር" },
+      },
+      {
+        eventTypeIndex: 1, id: "bridal-engagement", icon: "💍", accent: "#D98BB3", accentSoft: "rgba(217,139,179,0.18)",
+        en: { name: "Bridal & Engagement", price: "15,000 – 40,000 ETB" },
+        am: { name: "የኪዳን እና ውል በዓል", price: "15,000 – 40,000 ብር" },
+      },
+    ],
   },
   {
-    id: "silver", icon: "🥈", badge: false, accent: "#5FB8AC", accentSoft: "rgba(95,184,172,0.18)",
+    eventTypeIndex: 0, id: "silver", icon: "🥈", badge: false, accent: "#5FB8AC", accentSoft: "rgba(95,184,172,0.18)",
     en: { name: "Silver", tag: "Wedding Day Coordination", price: "45,000 ETB", duration: "Day-of only · 1 lead + 1 assistant",
       items: ["Pre-wedding consultation","Review of existing plans","Vendor confirmation","Timeline management","Ceremony & reception coordination","Guest assistance","On-site problem solving","Ensuring smooth event flow"] },
     am: { name: "ሲልቨር", tag: "የሰርግ ቀን ማስተባበር", price: "45,000 ብር", duration: "የቀኑ ብቻ · 1 መሪ + 1 ረዳት",
       items: ["ቅድመ-ሰርግ ምክክር","የነባር እቅድ ግምገማ","የአቅራቢ ማረጋገጫ","የጊዜ ሰሌዳ አስተዳደር","የሥነ ሥርዓት እና ግብዣ ማስተባበር","የእንግዳ ድጋፍ","በቦታው ላይ ችግር መፍታት","ለስላሳ የበዓል ፍሰት ማረጋገጥ"] },
   },
   {
-    id: "gold", icon: "🥇", badge: true, accent: "#E29A3E", accentSoft: "rgba(226,154,62,0.18)",
+    eventTypeIndex: 0, id: "gold", icon: "🥇", badge: true, accent: "#E29A3E", accentSoft: "rgba(226,154,62,0.18)",
     en: { name: "Gold", tag: "Complete Support Planning", price: "95,000 ETB", duration: "Guided planning · 2–3 months out",
       items: ["Wedding consultation & checklist","Budget guidance","Venue & vendor recommendations","Theme & decoration consultation","Vendor communication support","Contract review support","Final planning meeting","Day-of coordination support"] },
     am: { name: "ጎልድ", tag: "ሙሉ የድጋፍ እቅድ", price: "95,000 ብር", duration: "የተመራ እቅድ · 2–3 ወራት ቀደም ብሎ",
       items: ["የሰርግ ምክክር እና ዝርዝር","የበጀት መመሪያ","የቦታ እና አቅራቢ ምክረ ሃሳብ","የገጽታ እና ጌጣጌጥ ምክክር","የአቅራቢ ግንኙነት ድጋፍ","የውል ግምገማ ድጋፍ","የመጨረሻ እቅድ ስብሰባ","የቀኑ ማስተባበሪያ ድጋፍ"] },
   },
   {
-    id: "platinum", icon: "💎", badge: false, accent: "#E8C766", accentSoft: "rgba(232,199,102,0.16)",
+    eventTypeIndex: 0, id: "platinum", icon: "💎", badge: false, accent: "#E8C766", accentSoft: "rgba(232,199,102,0.16)",
     en: { name: "Platinum", tag: "Full Luxury Planning", price: "185,000 ETB", duration: "Full multi-day coverage · melse to reception",
       items: ["Full vision & budget planning","Venue & vendor selection","Decor planning & supervision","Catering, photo & video coordination","Makeup, dress & beauty coordination","Guest list & RSVP management","Wedding timeline & rehearsal","Full multi-day management","Emergency day-of support","Post-wedding follow-up"] },
     am: { name: "ፕላቲነም", tag: "ሙሉ የቅንጦት እቅድ", price: "185,000 ብር", duration: "ሙሉ የብዙ ቀናት ሽፋን · ከመልስ እስከ ግብዣ",
       items: ["ሙሉ ራዕይ እና በጀት እቅድ","የቦታ እና አቅራቢ ምርጫ","የጌጣጌጥ እቅድ እና ቁጥጥር","ምግብ፣ ፎቶ እና ቪዲዮ ማስተባበር","የሜካፕ፣ ልብስ እና ውበት ማስተባበር","የእንግዳ ዝርዝር አያያዝ","የጊዜ ሰሌዳ እና ልምምድ","ሙሉ የብዙ ቀናት አስተዳደር","የቀኑ ድንገተኛ ድጋፍ","ድህረ-ሰርግ ክትትል"] },
   },
-  
-  
- 
 ];
 
 // ---------- State ----------
@@ -148,6 +169,23 @@ function renderPackages() {
     card.style.setProperty("--accent", p.accent);
     card.style.borderTop = `3px solid ${p.accent}`;
 
+    const hasSubs = Array.isArray(p.subPackages);
+
+    const subGridHtml = hasSubs ? `
+      <div class="pkg-subgrid" id="subgrid-${p.id}">
+        ${p.subPackages.map((sp) => {
+          const sc = sp[currentLang];
+          return `
+            <div class="pkg-sub-card" style="border-color:${sp.accent}55;">
+              <div class="pkg-sub-icon" style="background:${sp.accentSoft};">${sp.icon}</div>
+              <div class="pkg-sub-info">
+                <div class="pkg-sub-name" style="color:${sp.accent};">${sc.name}</div>
+                <div class="pkg-sub-price">${sc.price}</div>
+              </div>
+            <button class="btn-primary pkg-sub-choose" data-choose="${sp.id}" data-event-type-index="${sp.eventTypeIndex ?? ""}" style="background:linear-gradient(135deg, ${sp.accent}, var(--gold-br));">${t("choose")}</button></div>`;
+        }).join("")}
+      </div>` : "";
+
     card.innerHTML = `
       ${p.badge ? `<div class="pkg-badge" style="background:linear-gradient(135deg, ${p.accent}, var(--gold));">${t("popular")}</div>` : ""}
       <div class="pkg-body">
@@ -156,23 +194,40 @@ function renderPackages() {
         <div class="pkg-tag" style="color:${p.accent};">${c.tag}</div>
         <div class="pkg-duration">${c.duration}</div>
         <div class="pkg-price">${c.price}</div>
-        <ul class="pkg-items">
-          ${c.items.map((item) => `<li class="pkg-item"><span style="color:${p.accent}; font-weight:700;">✦</span>${item}</li>`).join("")}
-        </ul>
-        <div class="pkg-addon" style="background:${p.accentSoft}; border:1px solid ${p.accent}55;">
-          <strong style="color:${p.accent};">${t("addonLabel")}: </strong>
-          <span style="color:var(--cream);">${t("addonText")}</span>
-        </div>
-        <button class="btn-primary pkg-choose" data-choose="${p.id}" style="background:linear-gradient(135deg, ${p.accent}, var(--gold-br));">${t("choose")}</button>
+        ${hasSubs ? "" : `
+          <ul class="pkg-items">
+            ${c.items.map((item) => `<li class="pkg-item"><span style="color:${p.accent}; font-weight:700;">✦</span>${item}</li>`).join("")}
+          </ul>
+          <div class="pkg-addon" style="background:${p.accentSoft}; border:1px solid ${p.accent}55;">
+            <strong style="color:${p.accent};">${t("addonLabel")}: </strong>
+            <span style="color:var(--cream);">${t("addonText")}</span>
+          </div>`}
+        <button class="btn-primary pkg-choose" data-toggle-sub="${hasSubs ? p.id : ""}" data-choose="${hasSubs ? "" : p.id}" data-event-type-index="${p.eventTypeIndex ?? ""}" style="background:linear-gradient(135deg, ${p.accent}, var(--gold-br));">
+          ${hasSubs ? t("seeOptions") : t("choose")}
+        </button>
+        ${subGridHtml}
       </div>
     `;
     grid.appendChild(card);
   });
 
-  grid.querySelectorAll("[data-choose]").forEach((btn) => {
+  grid.querySelectorAll("[data-choose]:not([data-choose=''])").forEach((btn) => {
     btn.addEventListener("click", () => {
       document.getElementById("packageSelect").value = btn.getAttribute("data-choose");
+      const idx = btn.getAttribute("data-event-type-index");
+      if (idx !== null && idx !== "") {
+        document.getElementById("eventTypeSelect").value = t("eventTypes")[Number(idx)];
+      }
       navigate("book");
+    });
+  });
+
+  grid.querySelectorAll("[data-toggle-sub]:not([data-toggle-sub=''])").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-toggle-sub");
+      const subgrid = document.getElementById(`subgrid-${id}`);
+      subgrid.classList.toggle("open");
+      btn.textContent = subgrid.classList.contains("open") ? t("hideOptions") : t("seeOptions");
     });
   });
 
@@ -189,7 +244,15 @@ function renderEventTypeOptions() {
 function renderPackageSelectOptions() {
   const sel = document.getElementById("packageSelect");
   const prev = sel.value || "gold";
-  sel.innerHTML = PACKAGES.map((p) => `<option value="${p.id}" ${p.id === prev ? "selected" : ""}>${p[currentLang].name} — ${p[currentLang].price}</option>`).join("");
+  const options = [];
+  PACKAGES.forEach((p) => {
+    if (Array.isArray(p.subPackages)) {
+      p.subPackages.forEach((sp) => options.push({ id: sp.id, label: `${sp[currentLang].name} — ${sp[currentLang].price}` }));
+    } else {
+      options.push({ id: p.id, label: `${p[currentLang].name} — ${p[currentLang].price}` });
+    }
+  });
+  sel.innerHTML = options.map((o) => `<option value="${o.id}" ${o.id === prev ? "selected" : ""}>${o.label}</option>`).join("");
 }
 
 // ---------- Navigation ----------
@@ -226,20 +289,16 @@ function validateBooking(data) {
   if (!data.phone.trim()) return t("errPhone");
   if (!data.date) return t("errDateRequired");
 
-  // Validate the date is real and parseable (catches malformed input on
-  // browsers/devices where the native date picker isn't available).
   const parsed = new Date(`${data.date}T00:00:00`);
   if (Number.isNaN(parsed.getTime())) return t("errDateInvalid");
 
-  // Event date should be today or in the future — catches typos like
-  // picking a past year, which is easy to do on manual date entry.
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   if (parsed < today) return t("errDatePast");
 
   if (!data.eventType) return t("errEventType");
 
-  return null; // valid
+  return null;
 }
 
 document.getElementById("bookingForm").addEventListener("submit", async (e) => {
@@ -268,9 +327,6 @@ document.getElementById("bookingForm").addEventListener("submit", async (e) => {
   const submitBtn = form.querySelector("button[type=submit]");
   submitBtn.disabled = true;
 
-  // Whatever happens with the network call below, the person filling this
-  // out should always land on a confirmation screen once their data is
-  // valid — there's no backend required for that part to work.
   let bookingId = genLocalId();
 
   try {
@@ -286,9 +342,6 @@ document.getElementById("bookingForm").addEventListener("submit", async (e) => {
       throw new Error(`Request failed with status ${res.status}`);
     }
   } catch (err) {
-    // No backend deployed yet, or the network call failed — that's fine,
-    // the booking reference still works and the Telegram deep link still
-    // works standalone once the backend exists.
     console.warn("[booking] backend unreachable, showing local confirmation:", err.message);
   }
 
@@ -303,8 +356,35 @@ function genLocalId() {
 
 function showConfirmation(bookingId) {
   document.getElementById("bookingRef").textContent = `${currentLang === "am" ? "የማስያዣ ቁጥር" : "Booking ref"}: ${bookingId}`;
-  document.getElementById("telegramLink").href = `https://t.me/${Habeshan_eventbot}?start=${bookingId}`;
+  document.getElementById("telegramLink").href = `https://t.me/${BOT_USERNAME}?start=${bookingId}`;
   navigate("confirm");
+}
+
+// ---------- Duplicate phone check ----------
+function checkExistingBooking(phone) {
+  const warnEl = document.getElementById("phoneWarning");
+  if (!warnEl) return;
+  if (!phone || phone.trim().length < 6) { warnEl.hidden = true; return; }
+  fetch(`${API_BASE}/api/bookings/check?phone=${encodeURIComponent(phone.trim())}`)
+    .then((res) => (res.ok ? res.json() : null))
+    .then((data) => {
+      if (data && data.exists) {
+        warnEl.textContent = currentLang === "am"
+          ? `ይህ ስልክ ቁጥር ቀደም ሲል ማስያዣ አለው — ${data.date} (${data.package})። አዲስ ማስያዣ ከሆነ መቀጠል ይችላሉ።`
+          : `This number already has a booking — ${data.date} (${data.package}). You can still continue if this is a separate booking.`;
+        warnEl.hidden = false;
+      } else {
+        warnEl.hidden = true;
+      }
+    })
+    .catch(() => { warnEl.hidden = true; });
+}
+
+const phoneInputEl = document.getElementById("phoneInput");
+if (phoneInputEl) {
+  phoneInputEl.addEventListener("blur", (e) => {
+    checkExistingBooking(e.target.value);
+  });
 }
 
 // ---------- Reactiveness: button ripple ----------
@@ -322,10 +402,7 @@ document.addEventListener("click", (e) => {
   ripple.addEventListener("animationend", () => ripple.remove());
 });
 
-// ---------- Reactiveness: cursor-tilt on package cards & photo tiles ----------
-// Only bind on devices that actually support hover with a precise pointer
-// (mouse/trackpad) — on touch devices this would otherwise leave cards
-// stuck mid-tilt after a tap, since touch never fires a real mouseleave.
+// ---------- Reactiveness: cursor-tilt ----------
 const supportsHoverTilt = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
 function attachTilt(el, { lift = -8, maxTilt = 6, scale = 1 } = {}) {
@@ -352,7 +429,6 @@ applyI18n();
 attachTiltToAll();
 navigate("home");
 
-// Prevent picking a past date directly in the native date picker too.
 (function setMinDate() {
   const dateInput = document.getElementById("dateInput");
   if (!dateInput) return;

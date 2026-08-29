@@ -187,6 +187,21 @@ async function pollTelegram() {
   }
 }
 
+app.get("/api/bookings/check", async (req, res) => {
+  const phone = (req.query.phone || "").trim();
+  if (!phone) return res.status(400).json({ error: "Phone number required." });
+  try {
+    const db = await connectDB();
+    const existing = await db.collection("bookings").find({ phone }).sort({ createdAt: -1 }).limit(1).toArray();
+    if (existing.length === 0) return res.json({ exists: false });
+    const b = existing[0];
+    res.json({ exists: true, date: b.date, package: b.package });
+  } catch (err) {
+    console.error("[error] failed to check phone:", err.message);
+    res.status(500).json({ error: "Could not check phone number." });
+  }
+});
+
 async function start() {
   await connectDB();
   app.listen(PORT, () => {
